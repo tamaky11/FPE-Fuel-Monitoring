@@ -520,8 +520,9 @@ function deleteRemark() {
 }
 
 function downloadTemplate() {
-    const template = `Tanggal,Tipe,ID Kategori,Sub Kategori,Item,Qty\n${currentYear}-09-15,ticket,1,ESP,Sumur A-01,100\n${currentYear}-09-15,actual,1,ESP,Sumur A-01,95\n`;
-    const blob = new Blob([template], { type: 'text/csv;charset=utf-8;' });
+    // Hanya header kolom (tanpa baris contoh)
+    const header = 'Tanggal,Tipe,ID Kategori,Sub Kategori,Item,Qty\n';
+    const blob = new Blob([header], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'template_import_fuel.csv';
