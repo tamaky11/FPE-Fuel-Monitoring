@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FPE Fuel Monitoring – Breakdown per Sumur</title>
+    <title>FPE Fuel Monitoring – Multiyear (2026-2027)</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
@@ -11,143 +11,144 @@
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'Inter', sans-serif; background:#f0f2f5; color:#1e293b; min-height:100vh; }
         .container { max-width:1500px; margin:0 auto; padding:24px; }
-        .app-header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1a5276 100%);
-            border-radius:16px; padding:24px 32px; display:flex; justify-content:space-between; align-items:center;
-            margin-bottom:28px; box-shadow:0 8px 32px rgba(0,0,0,.15); position:relative; overflow:hidden;
-        }
-        .app-header::after {
-            content:''; position:absolute; top:-50%; right:-20%; width:200px; height:200px;
-            background:radial-gradient(circle, rgba(255,255,255,.1), transparent 70%); border-radius:50%;
-        }
-        .header-left { display:flex; align-items:center; gap:16px; z-index:1; }
-        .logo-icon {
-            width:52px; height:52px; background:#fff; border-radius:10px; padding:4px;
-            display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,.2);
-        }
-        .logo-icon img { width:100%; height:100%; object-fit:contain; }
-        .header-left h1 { font-size:1.35rem; font-weight:700; color:#fff; line-height:1.2; }
-        .header-left h1 span { font-weight:300; font-size:.8rem; display:block; opacity:.85; letter-spacing:.5px; text-transform:uppercase; }
-        .header-right { display:flex; align-items:center; gap:12px; z-index:1; }
-        .period-badge {
-            background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.2); padding:8px 16px;
-            border-radius:20px; font-size:.85rem; font-weight:500; color:#fff; display:flex; align-items:center; gap:8px;
-        }
-
+        .app-header { background:linear-gradient(135deg,#0f172a,#1e3a5f); border-radius:16px; padding:24px 32px; display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; box-shadow:0 8px 32px rgba(0,0,0,.15); }
+        .header-left { display:flex; align-items:center; gap:16px; }
+        .logo-icon { width:52px; height:52px; background:transparent; border:2px solid #fff; border-radius:10px; padding:4px; display:flex; align-items:center; justify-content:center; }
+        .logo-icon img { width:100%; height:100%; object-fit:contain; filter:brightness(0) invert(1); }
+        .header-left h1 { font-size:1.35rem; font-weight:700; color:#fff; }
+        .header-left h1 span { font-weight:300; font-size:.75rem; display:block; opacity:.85; text-transform:uppercase; }
+        .header-right { display:flex; gap:12px; align-items:center; }
+        .period-badge { background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.2); padding:8px 16px; border-radius:20px; color:#fff; font-size:.85rem; display:flex; align-items:center; gap:8px; }
+        .month-select, .year-select { background: transparent; border: none; color: #fff; font-size: .9rem; font-weight: 600; outline: none; cursor: pointer; padding: 4px; }
+        .month-select option, .year-select option { color: #1e293b; background: #fff; }
+        
         .summary-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:28px; }
-        .summary-card {
-            background:#fff; border-radius:16px; padding:24px; display:flex; align-items:center; gap:16px;
-            box-shadow:0 2px 12px rgba(0,0,0,.04); border:1px solid rgba(0,0,0,.03); position:relative; overflow:hidden;
-        }
-        .summary-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; }
-        .budget-card::before { background:#3b82f6; }
-        .ticket-card::before { background:#f59e0b; }
-        .actual-card::before { background:#10b981; }
-        .variance-card::before { background:#8b5cf6; }
-        .summary-icon { width:56px; height:56px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
-        .budget-card .summary-icon { background:rgba(59,130,246,.1); color:#3b82f6; }
-        .ticket-card .summary-icon { background:rgba(245,158,11,.1); color:#f59e0b; }
-        .actual-card .summary-icon { background:rgba(16,185,129,.1); color:#10b981; }
-        .variance-card .summary-icon { background:rgba(139,92,246,.1); color:#8b5cf6; }
-        .summary-info .label { font-size:.8rem; font-weight:500; color:#64748b; text-transform:uppercase; letter-spacing:.5px; }
-        .summary-info .value { font-size:1.65rem; font-weight:700; color:#1e293b; margin-top:4px; }
-        .summary-info .sub { font-size:.75rem; color:#94a3b8; margin-top:2px; }
-
+        .summary-card { background:#fff; border-radius:16px; padding:24px; display:flex; align-items:center; gap:16px; box-shadow:0 2px 12px rgba(0,0,0,.04); border-left:5px solid; }
+        .summary-card.budget-card { border-left-color:#3b82f6; }
+        .summary-card.ticket-card { border-left-color:#f59e0b; }
+        .summary-card.remaining-card { border-left-color:#10b981; }
+        .summary-card.used-card { border-left-color:#8b5cf6; }
+        .summary-icon { width:50px; height:50px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; background:#f1f5f9; }
+        .summary-info .label { font-size:.75rem; color:#64748b; text-transform:uppercase; }
+        .summary-info .value { font-size:1.6rem; font-weight:700; }
+        
         .section { background:#fff; border-radius:16px; padding:28px; margin-bottom:28px; box-shadow:0 2px 12px rgba(0,0,0,.04); }
-        .section-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
-        .section-header h2 { font-size:1.15rem; font-weight:700; color:#1e293b; display:flex; align-items:center; gap:10px; }
-        .section-header h2 i { color:#3b82f6; }
+        .section-header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:20px; gap:12px; }
+        .section-header h2 { font-size:1.15rem; font-weight:700; display:flex; align-items:center; gap:10px; }
+        .toolbar { display:flex; gap:8px; flex-wrap:wrap; }
+        .btn { padding:8px 14px; border-radius:8px; border:none; font-weight:600; font-size:.8rem; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all .2s; }
+        .btn-blue { background:#3b82f6; color:#fff; } .btn-blue:hover { background:#2563eb; }
+        .btn-green { background:#10b981; color:#fff; } .btn-green:hover { background:#059669; }
+        .btn-orange { background:#f59e0b; color:#fff; } .btn-orange:hover { background:#d97706; }
+        .btn-gray { background:#e2e8f0; color:#334155; } .btn-gray:hover { background:#cbd5e1; }
+        
         .table-wrapper { overflow-x:auto; border-radius:12px; border:1px solid #f1f5f9; }
-        table { width:100%; border-collapse:collapse; min-width:1000px; }
-        thead th {
-            background:#f8fafc; padding:14px 16px; text-align:left; font-weight:600; font-size:.78rem;
-            text-transform:uppercase; letter-spacing:.6px; color:#64748b; border-bottom:2px solid #e2e8f0; white-space:nowrap;
-        }
-        tbody td { padding:14px 16px; border-bottom:1px solid #f1f5f9; font-size:.88rem; color:#334155; vertical-align:middle; }
+        table { width:100%; border-collapse:collapse; min-width:1200px; }
+        thead th { background:#f8fafc; padding:14px 16px; text-align:left; font-weight:600; font-size:.78rem; text-transform:uppercase; color:#64748b; border-bottom:2px solid #e2e8f0; }
+        tbody td { padding:14px 16px; border-bottom:1px solid #f1f5f9; font-size:.88rem; color:#334155; }
         tbody tr:hover { background:#f8fafc; }
-        tfoot td { padding:14px 16px; background:#f1f5f9; font-weight:700; font-size:.9rem; border-top:2px solid #e2e8f0; color:#1e293b; }
-
-        .category-cell { font-weight:500; display:flex; align-items:center; gap:8px; }
-        .category-dot { width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
-        .expand-btn { background:none; border:none; cursor:pointer; font-size:14px; color:#64748b; width:24px; height:24px; display:flex; align-items:center; justify-content:center; border-radius:4px; }
-        .expand-btn:hover { background:#e2e8f0; }
+        tfoot td { background:#f1f5f9; font-weight:700; padding:14px 16px; border-top:2px solid #e2e8f0; }
+        
+        .expand-btn { background:none; border:none; cursor:pointer; color:#64748b; width:24px; height:24px; }
         .expand-btn i { transition: transform .2s; }
         .expand-btn.expanded i { transform: rotate(90deg); }
-
+        
         .detail-row { display:none; background:#fbfdff; }
         .detail-row.show { display:table-row; }
         .detail-container { padding:16px 24px; background:#f8fafc; border-left:3px solid #3b82f6; margin:8px 16px; border-radius:8px; }
-        .detail-title { font-weight:700; font-size:.9rem; color:#1e293b; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
-        .detail-table { width:100%; border-collapse:collapse; background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.05); }
-        .detail-table th {
-            background:#eef2ff; padding:10px; text-align:left; font-size:.75rem; text-transform:uppercase;
-            color:#4f46e5; border-bottom:1px solid #e0e7ff;
-        }
-        .detail-table td { padding:8px 12px; font-size:.82rem; border-bottom:1px solid #f1f5f9; color:#334155; }
-        .detail-table tr:last-child td { border-bottom:none; }
-        .sub-header-row { background:#f1f5f9; font-weight:700; }
-        .sub-total-row { background:#f8fafc; font-weight:600; font-style:italic; }
-
-        .value-positive { color:#10b981; }
-        .value-negative { color:#ef4444; }
-        .status-badge { display:inline-flex; align-items:center; gap:4px; padding:4px 12px; border-radius:20px; font-size:.75rem; font-weight:600; }
-        .status-good { background:#d1fae5; color:#065f46; }
-        .status-over { background:#fee2e2; color:#991b1b; }
-        .progress-bar { width:100px; height:6px; background:#e2e8f0; border-radius:4px; overflow:hidden; display:inline-block; vertical-align:middle; }
+        .detail-title { font-weight:700; font-size:.9rem; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; }
+        .detail-table { width:100%; border-collapse:collapse; background:#fff; border-radius:8px; overflow:hidden; }
+        .detail-table th { background:#eef2ff; padding:8px; text-align:left; font-size:.75rem; text-transform:uppercase; color:#4f46e5; }
+        .detail-table td { padding:8px 12px; font-size:.82rem; border-bottom:1px solid #f1f5f9; }
+        
+        .type-badge { padding:2px 8px; border-radius:12px; font-size:.7rem; font-weight:700; }
+        .type-ticket { background:#fffbeb; color:#b45309; }
+        .type-actual { background:#d1fae5; color:#047857; }
+        
+        .action-btn { background:none; border:none; cursor:pointer; margin:0 4px; font-size:.85rem; }
+        .action-btn.edit { color:#3b82f6; }
+        .action-btn.delete { color:#ef4444; }
+        
+        .progress-bar { width:80px; height:6px; background:#e2e8f0; border-radius:4px; display:inline-block; vertical-align:middle; }
         .progress-bar .fill { height:100%; border-radius:4px; }
-
-        .charts-section { display:grid; grid-template-columns:1.4fr 1fr; gap:24px; margin-bottom:28px; }
-        .chart-card { background:#fff; border-radius:16px; padding:24px; box-shadow:0 2px 12px rgba(0,0,0,.04); border:1px solid rgba(0,0,0,.02); }
-        .chart-card h3 { font-size:1rem; font-weight:700; margin-bottom:4px; }
-        .chart-card .chart-subtitle { font-size:.78rem; color:#94a3b8; margin-bottom:16px; }
-        .chart-wrapper { position:relative; height:300px; }
-
-        @media(max-width:1024px) { .summary-cards { grid-template-columns:repeat(2,1fr); } .charts-section { grid-template-columns:1fr; } }
-        @media(max-width:640px) { .summary-cards { grid-template-columns:1fr; } .app-header { flex-direction:column; align-items:flex-start; gap:12px; } }
+        
+        .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center; }
+        .modal-overlay.show { display:flex; }
+        .modal { background:#fff; border-radius:16px; width:90%; max-width:600px; max-height:90vh; overflow-y:auto; padding:28px; box-shadow:0 20px 50px rgba(0,0,0,.2); }
+        .modal h3 { margin-bottom:20px; }
+        .form-group { margin-bottom:16px; }
+        .form-group label { font-size:.8rem; font-weight:600; display:block; margin-bottom:6px; }
+        .form-group input, .form-group select, .form-group textarea { width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; font-size:.9rem; }
+        .btn-group { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+        
+        .charts-section { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:28px; }
+        .chart-card { background:#fff; border-radius:16px; padding:24px; }
+        .chart-wrapper { position:relative; height:280px; }
+        .chart-wrapper-lg { position:relative; height:320px; }
+        @media(max-width:1024px){ .charts-section{ grid-template-columns:1fr; } .summary-cards{ grid-template-columns:repeat(2,1fr); } }
     </style>
 </head>
 <body>
 <div class="container">
     <header class="app-header">
         <div class="header-left">
-            <div class="logo-icon" style="background: transparent; border: 2px solid white; border-radius: 10px; padding: 4px;">
-                <img src="PetroChina-Logo.png" alt="PetroChina" style="width: 100%; height: 100%; object-fit: contain;">
-            </div>
+            <div class="logo-icon"><img src="PetroChina-Logo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/PetroChina_logo.svg/1200px-PetroChina_logo.svg.png'"></div>
             <h1>FPE Fuel Monitoring<span>FIELD PRODUCTION ENGINEERING DEPARTMENT PETROCHINA INTERNATIONAL JABUNG LTD</span></h1>
         </div>
         <div class="header-right">
-            <div class="period-badge"><i class="fas fa-calendar-alt"></i> September 2026</div>
+            <!-- Dropdown Tahun -->
+            <div class="period-badge" style="padding:4px 8px;">
+                <i class="fas fa-calendar-alt"></i>
+                <select id="yearSelect" class="year-select" onchange="changeYear(this.value)">
+                    <option value="2026" selected>Tahun 2026</option>
+                    <option value="2027">Tahun 2027</option>
+                </select>
+            </div>
+            <!-- Dropdown Bulan -->
+            <div class="period-badge" style="padding:4px 8px;">
+                <i class="fas fa-calendar-alt"></i>
+                <select id="monthSelect" class="month-select" onchange="changeMonth(this.value)">
+                    <option value="0" selected>Semua Bulan</option>
+                    <option value="outlook">Outlook YTD</option>
+                    <option value="1">Januari</option>
+                    <option value="2">Februari</option>
+                    <option value="3">Maret</option>
+                    <option value="4">April</option>
+                    <option value="5">Mei</option>
+                    <option value="6">Juni</option>
+                    <option value="7">Juli</option>
+                    <option value="8">Agustus</option>
+                    <option value="9">September</option>
+                    <option value="10">Oktober</option>
+                    <option value="11">November</option>
+                    <option value="12">Desember</option>
+                </select>
+            </div>
             <div class="period-badge"><i class="fas fa-tint"></i> Liters</div>
         </div>
     </header>
 
     <div class="summary-cards">
-        <div class="summary-card budget-card"><div class="summary-icon"><i class="fas fa-wallet"></i></div><div class="summary-info"><span class="label">Total Budget</span><div class="value" id="totalBudget">--</div><div class="sub">All categories</div></div></div>
-        <div class="summary-card ticket-card"><div class="summary-icon"><i class="fas fa-receipt"></i></div><div class="summary-info"><span class="label">Total Fuel Ticket</span><div class="value" id="totalTicket">--</div><div class="sub">Fuel logs</div></div></div>
-        <div class="summary-card actual-card"><div class="summary-icon"><i class="fas fa-gas-pump"></i></div><div class="summary-info"><span class="label">Total Actual</span><div class="value" id="totalActual">--</div><div class="sub">Operator report</div></div></div>
-        <div class="summary-card variance-card"><div class="summary-icon"><i class="fas fa-chart-line"></i></div><div class="summary-info"><span class="label">Variance</span><div class="value" id="totalVariance">--</div><div class="sub">Budget vs Actual</div></div></div>
+        <div class="summary-card budget-card"><div class="summary-icon"><i class="fas fa-wallet"></i></div><div><div class="label" id="budgetLabel">Yearly Budget</div><div class="value" id="totalBudget">--</div></div></div>
+        <div class="summary-card ticket-card"><div class="summary-icon"><i class="fas fa-receipt"></i></div><div><div class="label" id="ticketLabel">Total Fuel Ticket</div><div class="value" id="totalTicket">--</div></div></div>
+        <div class="summary-card remaining-card"><div class="summary-icon"><i class="fas fa-gas-pump"></i></div><div><div class="label" id="remainingLabel">Remaining Fuel Available</div><div class="value" id="totalRemaining">--</div></div></div>
+        <div class="summary-card used-card"><div class="summary-icon"><i class="fas fa-chart-line"></i></div><div><div class="label">% Used</div><div class="value" id="totalUsedPct">--</div></div></div>
     </div>
 
     <div class="section">
         <div class="section-header">
-            <h2><i class="fas fa-table"></i> Fuel Comparison Breakdown per Sumur</h2>
-            <span class="subtitle"><i class="fas fa-info-circle"></i> Klik ikon panah untuk rincian</span>
+            <h2><i class="fas fa-table"></i> Fuel Monitoring</h2>
+            <div class="toolbar">
+                <button class="btn btn-blue" onclick="showInputModal('ticket')"><i class="fas fa-ticket-alt"></i> Input Fuel Ticket</button>
+                <button class="btn btn-green" onclick="showInputModal('actual')"><i class="fas fa-gas-pump"></i> Input Actual Fuel</button>
+                <button class="btn btn-orange" onclick="importCSV()"><i class="fas fa-file-import"></i> Import Transaksi</button>
+                <button class="btn btn-gray" onclick="downloadTemplate()"><i class="fas fa-download"></i> Download Template Excel</button>
+                <button class="btn btn-gray" onclick="exportCSV()"><i class="fas fa-file-export"></i> Export Semua</button>
+            </div>
         </div>
         <div class="table-wrapper">
-            <table id="mainTable">
-                <thead>
-                    <tr>
-                        <th style="width:40px;"></th>
-                        <th>Kategori</th>
-                        <th>Budget</th>
-                        <th>Fuel Ticket</th>
-                        <th>Actual</th>
-                        <th>Δ Budget vs Ticket</th>
-                        <th>Δ Budget vs Actual</th>
-                        <th>% Used</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
+            <table>
+                <thead><tr><th></th><th>Kategori</th><th>Budget</th><th>Total Fuel Ticket</th><th>Actual Fuel</th><th>Δ BvsT</th><th>Δ BvsA</th><th>%Used (Over/Under)</th><th>Status</th></tr></thead>
                 <tbody id="mainTableBody"></tbody>
                 <tfoot id="mainTableFoot"></tfoot>
             </table>
@@ -156,249 +157,494 @@
 
     <div class="charts-section">
         <div class="chart-card">
-            <h3><i class="fas fa-chart-bar"></i> Comparison Chart</h3>
-            <p class="chart-subtitle">Budget vs Ticket vs Actual per category</p>
-            <div class="chart-wrapper"><canvas id="barChart"></canvas></div>
-        </div>
-        <div class="chart-card">
-            <h3><i class="fas fa-chart-pie"></i> Actual Share</h3>
-            <p class="chart-subtitle">Distribution of actual consumption</p>
+            <h3>Distribusi Ticket</h3>
             <div class="chart-wrapper"><canvas id="donutChart"></canvas></div>
         </div>
+        <div class="chart-card">
+            <h3>Komparasi Agregat</h3>
+            <div class="chart-wrapper"><canvas id="barChart"></canvas></div>
+        </div>
     </div>
-    <div class="footer">© 2026 FPE Fuel Monitoring Dashboard – PetroChina International Jabung Ltd</div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2><i class="fas fa-chart-line"></i> Trending Fuel per Kategori</h2>
+            <span class="subtitle" style="font-size:0.85rem;color:#64748b;"><i class="fas fa-info-circle"></i> Actual (bulan berjalan) + Forecast (bulan mendatang)</span>
+        </div>
+        <div class="chart-wrapper-lg">
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <h3 id="modalTitle">Input Fuel Ticket</h3>
+        <div id="modalBody"></div>
+        <div class="btn-group">
+            <button class="btn btn-gray" onclick="closeModal()">Batal</button>
+            <button class="btn btn-primary" onclick="saveTransaction()">Simpan</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="remarkOverlay">
+    <div class="modal">
+        <h3 id="remarkTitle">Tambah Remark Grafik</h3>
+        <div id="remarkBody">
+            <p id="remarkContextText" style="margin-bottom:16px;font-weight:600;"></p>
+            <div class="form-group">
+                <label>Catatan (Remark)</label>
+                <textarea id="remarkInput" rows="3" placeholder="Tuliskan keterangan untuk titik ini..."></textarea>
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-gray" onclick="closeRemarkModal()">Batal</button>
+            <button class="btn btn-danger" onclick="deleteRemark()" id="deleteRemarkBtn" style="display:none;background:#ef4444;color:#fff;">Hapus</button>
+            <button class="btn btn-primary" onclick="saveRemark()">Simpan</button>
+        </div>
+    </div>
 </div>
 
 <script>
-    // ===== STRUKTUR DATA BARU: Setiap sumur memiliki nilai sendiri =====
-    const fuelCategories = [
-        {
-            id: 1, category: 'Fuel for Artificial Lift', budget: 5000, ticket: 4800, actual: 4900, color: '#3b82f6',
-            breakdown: [
-                { sub: 'ESP', items: [
-                    { name: 'Sumur A-01', budget: 700, ticket: 650, actual: 680 },
-                    { name: 'Sumur A-02', budget: 650, ticket: 620, actual: 630 },
-                    { name: 'Sumur A-03', budget: 650, ticket: 630, actual: 640 }
-                ]},
-                { sub: 'HPU', items: [
-                    { name: 'Sumur B-07', budget: 600, ticket: 570, actual: 590 },
-                    { name: 'Sumur B-11', budget: 600, ticket: 580, actual: 610 }
-                ]},
-                { sub: 'Plunger Lift', items: [
-                    { name: 'Sumur C-21', budget: 800, ticket: 750, actual: 770 }
-                ]},
-                { sub: 'EAS', items: [
-                    { name: 'Sumur D-04', budget: 500, ticket: 490, actual: 480 },
-                    { name: 'Sumur D-09', budget: 500, ticket: 510, actual: 500 }
-                ]}
-            ]
-        },
-        {
-            id: 2, category: 'Fuel for Stimulation', budget: 3000, ticket: 2800, actual: 3100, color: '#f59e0b',
-            breakdown: [
-                { sub: 'Stimulation Program', items: [
-                    { name: 'Sumur E-12', budget: 1500, ticket: 1400, actual: 1550 },
-                    { name: 'Sumur E-15', budget: 1500, ticket: 1400, actual: 1550 }
-                ]}
-            ]
-        },
-        {
-            id: 3, category: 'Fuel for Well Intervention', budget: 2000, ticket: 2100, actual: 1950, color: '#10b981',
-            breakdown: [
-                { sub: 'Slickline', items: [
-                    { name: 'Sumur F-02', budget: 200, ticket: 180, actual: 190 },
-                    { name: 'Sumur F-08', budget: 200, ticket: 170, actual: 190 }
-                ]},
-                { sub: 'Stimulation', items: [
-                    { name: 'Sumur G-01', budget: 300, ticket: 320, actual: 300 }
-                ]},
-                { sub: 'CTU', items: [
-                    { name: 'Sumur H-03', budget: 250, ticket: 300, actual: 240 },
-                    { name: 'Sumur H-05', budget: 250, ticket: 300, actual: 240 }
-                ]},
-                { sub: 'Wireline', items: [
-                    { name: 'Sumur I-01', budget: 175, ticket: 165, actual: 180 },
-                    { name: 'Sumur I-04', budget: 175, ticket: 165, actual: 180 }
-                ]},
-                { sub: 'Wellhead Maintenance', items: [
-                    { name: 'Sumur J-02', budget: 125, ticket: 130, actual: 120 },
-                    { name: 'Sumur J-03', budget: 125, ticket: 130, actual: 120 }
-                ]},
-                { sub: 'Other', items: [
-                    { name: 'Vehicle ABC-123', budget: 100, ticket: 120, actual: 95 },
-                    { name: 'Vehicle XYZ-789', budget: 100, ticket: 120, actual: 95 }
-                ]}
-            ]
-        },
-        {
-            id: 4, category: 'Fuel for Separator', budget: 1500, ticket: 1400, actual: 1450, color: '#8b5cf6',
-            breakdown: [
-                { sub: 'V-114', items: [{ name: 'Separator V-114', budget: 200, ticket: 180, actual: 190 }] },
-                { sub: 'V-140', items: [{ name: 'Separator V-140', budget: 150, ticket: 140, actual: 145 }] },
-                { sub: 'V-130', items: [{ name: 'Separator V-130', budget: 150, ticket: 130, actual: 140 }] },
-                { sub: 'V-910', items: [{ name: 'Separator V-910', budget: 250, ticket: 240, actual: 245 }] },
-                { sub: 'V-920', items: [{ name: 'Separator V-920', budget: 200, ticket: 190, actual: 195 }] },
-                { sub: 'V-930', items: [{ name: 'Separator V-930', budget: 180, ticket: 170, actual: 175 }] },
-                { sub: 'Tank-01', items: [{ name: 'Tank-01', budget: 100, ticket: 90, actual: 95 }] },
-                { sub: 'Tank-02', items: [{ name: 'Tank-02', budget: 90, ticket: 80, actual: 85 }] },
-                { sub: 'Tank-03', items: [{ name: 'Tank-03', budget: 80, ticket: 70, actual: 75 }] },
-                { sub: 'Tank-04', items: [{ name: 'Tank-04', budget: 70, ticket: 60, actual: 65 }] },
-                { sub: 'Other', items: [{ name: 'Others', budget: 30, ticket: 50, actual: 40 }] }
-            ]
-        },
-        {
-            id: 5, category: 'Fuel for Other', budget: 1000, ticket: 900, actual: 1050, color: '#ef4444',
-            breakdown: [] // tanpa breakdown
+// Data kategori dengan budget per tahun (2026 & 2027)
+const categories = [
+    { id: 1, name: 'Fuel for Artificial Lift', budgets: { 2026: 5000, 2027: 5500 } },
+    { id: 2, name: 'Fuel for Stimulation', budgets: { 2026: 3000, 2027: 3500 } },
+    { id: 3, name: 'Fuel for Well Intervention', budgets: { 2026: 2000, 2027: 2200 } },
+    { id: 4, name: 'Fuel for Separator', budgets: { 2026: 1500, 2027: 1600 } },
+    { id: 5, name: 'Fuel for Other', budgets: { 2026: 1000, 2027: 1100 } }
+];
+
+// Data transaksi (dummy 2026 dan 2027)
+let transactions = [
+    // 2026
+    { id: 1, date: '2026-01-10', categoryId: 1, sub: 'ESP', item: 'Sumur A-01', type: 'ticket', qty: 600 },
+    { id: 2, date: '2026-01-12', categoryId: 1, sub: 'ESP', item: 'Sumur A-01', type: 'actual', qty: 610 },
+    { id: 3, date: '2026-02-05', categoryId: 1, sub: 'HPU', item: 'Sumur B-07', type: 'ticket', qty: 500 },
+    { id: 4, date: '2026-02-08', categoryId: 2, sub: 'Stimulation Program', item: 'Sumur E-12', type: 'ticket', qty: 1200 },
+    { id: 5, date: '2026-03-15', categoryId: 2, sub: 'Stimulation Program', item: 'Sumur E-12', type: 'actual', qty: 1250 },
+    { id: 6, date: '2026-04-20', categoryId: 3, sub: 'CTU', item: 'Sumur H-03', type: 'ticket', qty: 250 },
+    { id: 7, date: '2026-05-22', categoryId: 3, sub: 'CTU', item: 'Sumur H-03', type: 'actual', qty: 230 },
+    { id: 8, date: '2026-06-10', categoryId: 4, sub: 'V-114', item: 'Separator V-114', type: 'ticket', qty: 150 },
+    { id: 9, date: '2026-07-18', categoryId: 4, sub: 'V-114', item: 'Separator V-114', type: 'actual', qty: 140 },
+    { id: 10, date: '2026-08-25', categoryId: 5, sub: 'Other', item: 'Vehicle ABC-123', type: 'ticket', qty: 100 },
+    { id: 11, date: '2026-09-01', categoryId: 5, sub: 'Other', item: 'Vehicle ABC-123', type: 'actual', qty: 95 },
+    { id: 12, date: '2026-09-05', categoryId: 1, sub: 'ESP', item: 'Sumur A-01', type: 'ticket', qty: 650 },
+    { id: 13, date: '2026-09-06', categoryId: 1, sub: 'ESP', item: 'Sumur A-01', type: 'actual', qty: 680 },
+    { id: 14, date: '2026-09-10', categoryId: 2, sub: 'Stimulation Program', item: 'Sumur E-12', type: 'ticket', qty: 1400 },
+    { id: 15, date: '2026-09-11', categoryId: 2, sub: 'Stimulation Program', item: 'Sumur E-12', type: 'actual', qty: 1550 },
+    { id: 16, date: '2026-09-15', categoryId: 3, sub: 'CTU', item: 'Sumur H-03', type: 'ticket', qty: 300 },
+    { id: 17, date: '2026-09-16', categoryId: 3, sub: 'CTU', item: 'Sumur H-03', type: 'actual', qty: 240 },
+    { id: 18, date: '2026-09-20', categoryId: 4, sub: 'V-114', item: 'Separator V-114', type: 'ticket', qty: 180 },
+    { id: 19, date: '2026-09-21', categoryId: 4, sub: 'V-114', item: 'Separator V-114', type: 'actual', qty: 190 },
+    // 2027
+    { id: 20, date: '2027-01-10', categoryId: 1, sub: 'ESP', item: 'Sumur A-01', type: 'ticket', qty: 650 },
+    { id: 21, date: '2027-01-12', categoryId: 1, sub: 'ESP', item: 'Sumur A-01', type: 'actual', qty: 660 },
+    { id: 22, date: '2027-02-05', categoryId: 2, sub: 'Stimulation Program', item: 'Sumur E-12', type: 'ticket', qty: 1300 },
+    { id: 23, date: '2027-03-15', categoryId: 3, sub: 'CTU', item: 'Sumur H-03', type: 'actual', qty: 250 },
+    { id: 24, date: '2027-04-20', categoryId: 4, sub: 'V-114', item: 'Separator V-114', type: 'ticket', qty: 160 }
+];
+
+let currentYear = 2026;
+let currentMonth = 0; // 0 = semua, 'outlook', 1-12
+let editingId = null;
+let remarks = {};
+let remarkTarget = { catId: null, month: null };
+
+function getFilteredTransactions() {
+    if (currentMonth === 0) return transactions.filter(t => new Date(t.date).getFullYear() === currentYear);
+    if (currentMonth === 'outlook') {
+        const lastMonth = getLastMonthWithTicket();
+        return transactions.filter(t => {
+            const d = new Date(t.date);
+            return d.getFullYear() === currentYear && d.getMonth() <= lastMonth;
+        });
+    }
+    return transactions.filter(t => {
+        const d = new Date(t.date);
+        return d.getFullYear() === currentYear && d.getMonth() + 1 === currentMonth;
+    });
+}
+
+function getLastMonthWithTicket() {
+    let maxMonth = 0;
+    transactions.forEach(tx => {
+        if (tx.type === 'ticket') {
+            const d = new Date(tx.date);
+            if (d.getFullYear() === currentYear) {
+                maxMonth = Math.max(maxMonth, d.getMonth());
+            }
         }
-    ];
+    });
+    return maxMonth;
+}
 
-    // TOTALS (agregat per kategori tetap dihitung manual)
-    const totalBudget = fuelCategories.reduce((s,d) => s + d.budget, 0);
-    const totalTicket = fuelCategories.reduce((s,d) => s + d.ticket, 0);
-    const totalActual = fuelCategories.reduce((s,d) => s + d.actual, 0);
-    const totalVariance = totalBudget - totalActual;
+function getTransactionsForCategory(catId) {
+    return getFilteredTransactions().filter(t => t.categoryId === catId);
+}
 
-    document.getElementById('totalBudget').textContent = totalBudget.toLocaleString('id-ID') + ' L';
-    document.getElementById('totalTicket').textContent = totalTicket.toLocaleString('id-ID') + ' L';
-    document.getElementById('totalActual').textContent = totalActual.toLocaleString('id-ID') + ' L';
-    document.getElementById('totalVariance').textContent = (totalVariance >= 0 ? '+' : '') + totalVariance.toLocaleString('id-ID') + ' L';
+function getBudgetForCategory(catId) {
+    const cat = categories.find(c => c.id === catId);
+    const yearly = cat.budgets[currentYear] || 0;
+    if (currentMonth === 0 || currentMonth === 'outlook') return yearly;
+    return Math.round(yearly / 12);
+}
 
-    // === RENDER TABLE MAIN ===
+function getTicketOutlook(catId) {
+    const catTx = getTransactionsForCategory(catId).filter(t => t.type === 'ticket');
+    if (currentMonth !== 'outlook') {
+        return catTx.reduce((sum, t) => sum + t.qty, 0);
+    }
+    const lastMonth = getLastMonthWithTicket();
+    const monthsWithData = lastMonth + 1;
+    if (monthsWithData === 0) return 0;
+    const totalTicket = catTx.reduce((sum, t) => sum + t.qty, 0);
+    const avg = totalTicket / monthsWithData;
+    return Math.round(avg * 12);
+}
+
+function getAggregate(catId) {
+    const tx = getTransactionsForCategory(catId);
+    let actual = 0;
+    tx.forEach(t => { if (t.type === 'actual') actual += t.qty; });
+    const budget = getBudgetForCategory(catId);
+    const ticket = getTicketOutlook(catId);
+    return { budget, ticket, actual };
+}
+
+function getTrendDataOutlook() {
+    let trendActual = {};
+    categories.forEach(cat => { trendActual[cat.id] = new Array(12).fill(0); });
+    transactions.forEach(tx => {
+        if (tx.type !== 'ticket') return;
+        const d = new Date(tx.date);
+        if (d.getFullYear() !== currentYear) return;
+        const month = d.getMonth();
+        if (trendActual[tx.categoryId]) {
+            trendActual[tx.categoryId][month] += tx.qty;
+        }
+    });
+    if (currentMonth !== 'outlook') return trendActual;
+    const lastMonth = getLastMonthWithTicket();
+    let trendOutlook = {};
+    categories.forEach(cat => {
+        const actualArr = trendActual[cat.id];
+        let sum = 0;
+        for (let i = 0; i <= lastMonth; i++) sum += actualArr[i];
+        const avg = (lastMonth + 1) > 0 ? sum / (lastMonth + 1) : 0;
+        let newArr = [...actualArr];
+        for (let i = lastMonth + 1; i < 12; i++) {
+            newArr[i] = Math.round(avg);
+        }
+        trendOutlook[cat.id] = newArr;
+    });
+    return trendOutlook;
+}
+
+function getUsedPctText(ticket, budget) {
+    const pct = Math.round((ticket / budget * 100));
+    if (pct > 100) return `${pct}% (Over ${pct - 100}%)`;
+    if (pct < 100) return `${pct}% (Under ${100 - pct}%)`;
+    return `${pct}% (Exact)`;
+}
+
+function renderTable() {
     const tbody = document.getElementById('mainTableBody');
-    fuelCategories.forEach(cat => {
-        const deltaTicket = cat.budget - cat.ticket;
-        const deltaActual = cat.budget - cat.actual;
-        const pctUsed = (cat.actual / cat.budget * 100).toFixed(1);
-        const isOver = cat.actual > cat.budget;
-
+    tbody.innerHTML = '';
+    let totalBudget = 0, totalTicket = 0, totalActual = 0;
+    categories.forEach(cat => {
+        const agg = getAggregate(cat.id);
+        totalBudget += agg.budget;
+        totalTicket += agg.ticket;
+        totalActual += agg.actual;
+        const deltaTicket = agg.budget - agg.ticket;
+        const deltaActual = agg.budget - agg.actual;
+        const usedText = getUsedPctText(agg.ticket, agg.budget);
+        const isOver = agg.ticket > agg.budget;
         const tr = document.createElement('tr');
         tr.setAttribute('data-cat-id', cat.id);
         tr.innerHTML = `
             <td><button class="expand-btn" onclick="toggleRow(${cat.id})"><i class="fas fa-chevron-right"></i></button></td>
-            <td>
-                <div class="category-cell">
-                    <span class="category-dot" style="background:${cat.color}"></span>
-                    ${cat.category}
-                    ${cat.breakdown.length ? '' : '<span style="font-size:.7rem;color:#94a3b8;margin-left:8px;">(no breakdown)</span>'}
-                </div>
-            </td>
-            <td>${cat.budget.toLocaleString('id-ID')}</td>
-            <td>${cat.ticket.toLocaleString('id-ID')}</td>
-            <td>${cat.actual.toLocaleString('id-ID')}</td>
-            <td><span class="${deltaTicket >= 0 ? 'value-positive' : 'value-negative'}">${deltaTicket >= 0 ? '+' : ''}${deltaTicket.toLocaleString('id-ID')}</span></td>
-            <td><span class="${deltaActual >= 0 ? 'value-positive' : 'value-negative'}">${deltaActual >= 0 ? '+' : ''}${deltaActual.toLocaleString('id-ID')}</span></td>
-            <td>
-                <div style="display:flex;align-items:center;gap:8px;">
-                    <div class="progress-bar"><div class="fill" style="width:${Math.min(pctUsed,100)}%;background:${isOver ? '#ef4444' : '#10b981'}"></div></div>
-                    <span style="font-size:.78rem;font-weight:600;">${pctUsed}%</span>
-                </div>
-            </td>
-            <td><span class="status-badge ${isOver ? 'status-over' : 'status-good'}"><i class="fas ${isOver ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i>${isOver ? 'Over Budget' : 'On Budget'}</span></td>
+            <td><strong>${cat.name}</strong></td>
+            <td>${agg.budget.toLocaleString('id-ID')}</td>
+            <td>${agg.ticket.toLocaleString('id-ID')}</td>
+            <td>${agg.actual.toLocaleString('id-ID')}</td>
+            <td><span class="${deltaTicket>=0?'value-positive':'value-negative'}">${deltaTicket>=0?'+':''}${deltaTicket.toLocaleString('id-ID')}</span></td>
+            <td><span class="${deltaActual>=0?'value-positive':'value-negative'}">${deltaActual>=0?'+':''}${deltaActual.toLocaleString('id-ID')}</span></td>
+            <td><div class="progress-bar"><div class="fill" style="width:${Math.min((agg.ticket/agg.budget*100),100)}%;background:${isOver?'#ef4444':'#10b981'}"></div></div> ${usedText}</td>
+            <td><span class="${isOver?'status-over':'status-good'}">${isOver?'Over Budget':'On Budget'}</span></td>
         `;
         tbody.appendChild(tr);
-
-        // Detail row dengan breakdown per sumur
-        if (cat.breakdown.length) {
+        const txList = getTransactionsForCategory(cat.id);
+        if (txList.length > 0) {
             const detailTr = document.createElement('tr');
             detailTr.classList.add('detail-row');
             detailTr.id = 'detail-row-' + cat.id;
-
-            let detailContent = '';
-            cat.breakdown.forEach(subCat => {
-                // Header per sub kategori
-                detailContent += `<tr class="sub-header-row"><td colspan="6">${subCat.sub}</td></tr>`;
-                // Baris per sumur
-                subCat.items.forEach(item => {
-                    const subDelta = item.budget - item.actual;
-                    detailContent += `
-                        <tr>
-                            <td></td>
-                            <td><strong>${item.name}</strong></td>
-                            <td>${item.budget.toLocaleString('id-ID')}</td>
-                            <td>${item.ticket.toLocaleString('id-ID')}</td>
-                            <td>${item.actual.toLocaleString('id-ID')}</td>
-                            <td class="${subDelta >= 0 ? 'value-positive' : 'value-negative'}">${subDelta >= 0 ? '+' : ''}${subDelta.toLocaleString('id-ID')}</td>
-                        </tr>
-                    `;
-                });
+            let rows = '';
+            txList.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(tx => {
+                const badge = tx.type === 'ticket' ? 'type-ticket' : 'type-actual';
+                const label = tx.type === 'ticket' ? 'Fuel Ticket' : 'Actual Fuel';
+                rows += `<tr><td>${tx.date}</td><td>${tx.sub}</td><td>${tx.item}</td><td><span class="type-badge ${badge}">${label}</span></td><td>${Math.round(tx.qty).toLocaleString('id-ID')}</td><td><button class="action-btn edit" onclick="showEditModal(${tx.id})"><i class="fas fa-edit"></i></button><button class="action-btn delete" onclick="deleteTransaction(${tx.id})"><i class="fas fa-trash"></i></button></td></tr>`;
             });
-
-            detailTr.innerHTML = `
-                <td colspan="9">
-                    <div class="detail-container">
-                        <div class="detail-title"><i class="fas fa-list-ul"></i> Breakdown – ${cat.category} (per sumur/unit)</div>
-                        <table class="detail-table">
-                            <thead>
-                                <tr>
-                                    <th style="width:30px;"></th>
-                                    <th>Sumur / Unit</th>
-                                    <th>Budget</th>
-                                    <th>Ticket</th>
-                                    <th>Actual</th>
-                                    <th>Δ Actual vs Budget</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${detailContent}
-                            </tbody>
-                        </table>
-                    </div>
-                </td>
-            `;
+            detailTr.innerHTML = `<td colspan="9"><div class="detail-container"><div class="detail-title"><i class="fas fa-list-ul"></i> Riwayat Transaksi</div><table class="detail-table"><thead><tr><th>Tanggal</th><th>Sub Kategori</th><th>Item/Sumur</th><th>Tipe</th><th>Qty (L)</th><th>Aksi</th></tr></thead><tbody>${rows}</tbody></table></div></td>`;
             tbody.appendChild(detailTr);
         }
     });
+    const totalRemaining = totalBudget - totalTicket;
+    const totalUsedPctText = getUsedPctText(totalTicket, totalBudget);
+    document.getElementById('totalBudget').textContent = totalBudget.toLocaleString('id-ID') + ' L';
+    document.getElementById('totalTicket').textContent = totalTicket.toLocaleString('id-ID') + ' L';
+    document.getElementById('totalRemaining').textContent = totalRemaining.toLocaleString('id-ID') + ' L';
+    document.getElementById('totalUsedPct').textContent = totalUsedPctText;
+    
+    // Label dinamis
+    const isOutlook = currentMonth === 'outlook';
+    document.getElementById('ticketLabel').innerText = isOutlook ? 'Total Fuel Ticket (Outlook YTD)' : 'Total Fuel Ticket';
+    document.getElementById('remainingLabel').innerText = isOutlook ? 'Forecast Last Stock Fuel YTD' : 'Remaining Fuel Available';
+    document.getElementById('budgetLabel').innerText = (currentMonth === 0 || currentMonth === 'outlook') ? 'Yearly Budget' : 'Monthly Budget';
 
-    // TFOOT
-    const totalDeltaTicket = totalBudget - totalTicket;
-    const totalDeltaActual = totalBudget - totalActual;
-    const totalPct = (totalActual / totalBudget * 100).toFixed(1);
-    document.getElementById('mainTableFoot').innerHTML = `
-        <tr>
-            <td colspan="2" style="text-align:right;font-weight:800;">TOTAL</td>
-            <td>${totalBudget.toLocaleString('id-ID')}</td>
-            <td>${totalTicket.toLocaleString('id-ID')}</td>
-            <td>${totalActual.toLocaleString('id-ID')}</td>
-            <td class="${totalDeltaTicket >= 0 ? 'value-positive' : 'value-negative'}">${totalDeltaTicket >= 0 ? '+' : ''}${totalDeltaTicket.toLocaleString('id-ID')}</td>
-            <td class="${totalDeltaActual >= 0 ? 'value-positive' : 'value-negative'}">${totalDeltaActual >= 0 ? '+' : ''}${totalDeltaActual.toLocaleString('id-ID')}</td>
-            <td>${totalPct}%</td>
-            <td></td>
-        </tr>
+    document.getElementById('mainTableFoot').innerHTML = `<tr><td colspan="2" style="text-align:right;">TOTAL</td><td>${totalBudget.toLocaleString('id-ID')}</td><td>${totalTicket.toLocaleString('id-ID')}</td><td>${totalActual.toLocaleString('id-ID')}</td><td>${((totalBudget-totalTicket)>=0?'+':'')+(totalBudget-totalTicket).toLocaleString('id-ID')}</td><td>${((totalBudget-totalActual)>=0?'+':'')+(totalBudget-totalActual).toLocaleString('id-ID')}</td><td colspan="2">${totalUsedPctText}</td></tr>`;
+    updateCharts();
+}
+
+function toggleRow(catId) {
+    const row = document.getElementById('detail-row-'+catId);
+    const btn = document.querySelector(`[data-cat-id="${catId}"] .expand-btn`);
+    if (row) { row.classList.toggle('show'); btn.classList.toggle('expanded'); }
+}
+
+function changeYear(year) {
+    currentYear = parseInt(year);
+    document.getElementById('yearSelect').value = year;
+    currentMonth = 0;
+    document.getElementById('monthSelect').value = '0';
+    renderTable();
+}
+
+function changeMonth(month) {
+    currentMonth = month === 'outlook' ? 'outlook' : parseInt(month);
+    document.getElementById('monthSelect').value = month;
+    renderTable();
+}
+
+function showInputModal(type) {
+    editingId = null;
+    document.getElementById('modalTitle').innerText = type === 'ticket' ? 'Input Fuel Ticket Baru' : 'Input Actual Fuel Baru';
+    renderModalForm(type);
+    document.getElementById('modalOverlay').classList.add('show');
+}
+
+function showEditModal(txId) {
+    const tx = transactions.find(t => t.id === txId);
+    if (!tx) return;
+    editingId = txId;
+    document.getElementById('modalTitle').innerText = tx.type === 'ticket' ? 'Edit Fuel Ticket' : 'Edit Actual Fuel';
+    renderModalForm(tx.type, tx);
+    document.getElementById('modalOverlay').classList.add('show');
+}
+
+function renderModalForm(type, tx = null) {
+    const body = document.getElementById('modalBody');
+    const catOptions = categories.map(c => `<option value="${c.id}" ${tx && tx.categoryId === c.id ? 'selected' : ''}>${c.name}</option>`).join('');
+    const typeLabel = type === 'ticket' ? 'Fuel Ticket' : 'Actual Fuel';
+    let defaultDate;
+    if (tx) defaultDate = tx.date;
+    else if (currentMonth === 'outlook' || currentMonth === 0) {
+        const today = new Date();
+        defaultDate = today.getFullYear() === currentYear ? today.toISOString().split('T')[0] : `${currentYear}-01-01`;
+    } else defaultDate = `${currentYear}-${String(currentMonth).padStart(2,'0')}-01`;
+    
+    body.innerHTML = `
+        <div class="form-group"><label>Tipe Transaksi</label><input type="text" value="${typeLabel}" disabled style="background:#f8fafc;"></div>
+        <div class="form-group"><label>Tanggal</label><input type="date" id="txDate" value="${defaultDate}" min="${currentYear}-01-01" max="${currentYear}-12-31"></div>
+        <div class="form-group"><label>Kategori</label><select id="txCat">${catOptions}</select></div>
+        <div class="form-group"><label>Sub Kategori</label><input type="text" id="txSub" value="${tx ? tx.sub : ''}" placeholder="cth: ESP"></div>
+        <div class="form-group"><label>Item / Sumur</label><input type="text" id="txItem" value="${tx ? tx.item : ''}" placeholder="cth: Sumur A-01"></div>
+        <div class="form-group"><label>Qty (Liters)</label><input type="number" id="txQty" value="${tx ? Math.round(tx.qty) : ''}" step="1" min="0"></div>
     `;
+    window.editingType = type;
+}
 
-    window.toggleRow = function(catId) {
-        const detailRow = document.getElementById('detail-row-' + catId);
-        const btn = document.querySelector(`[data-cat-id="${catId}"] .expand-btn`);
-        if (detailRow) {
-            detailRow.classList.toggle('show');
-            btn.classList.toggle('expanded');
-        }
+function saveTransaction() {
+    const date = document.getElementById('txDate').value;
+    const categoryId = parseInt(document.getElementById('txCat').value);
+    const sub = document.getElementById('txSub').value.trim();
+    const item = document.getElementById('txItem').value.trim();
+    const qty = Math.round(parseFloat(document.getElementById('txQty').value) || 0);
+    const type = window.editingType;
+    if (!date || !sub || !item || qty <= 0) { alert('Data belum lengkap'); return; }
+    if (editingId === null) {
+        const newId = transactions.length ? Math.max(...transactions.map(t => t.id)) + 1 : 1;
+        transactions.push({ id: newId, date, categoryId, sub, item, type, qty });
+    } else {
+        const tx = transactions.find(t => t.id === editingId);
+        if (tx) { tx.date = date; tx.categoryId = categoryId; tx.sub = sub; tx.item = item; tx.qty = qty; }
+    }
+    closeModal();
+    renderTable();
+}
+
+function deleteTransaction(txId) {
+    if (!confirm('Hapus transaksi ini?')) return;
+    transactions = transactions.filter(t => t.id !== txId);
+    renderTable();
+}
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
+
+function showRemarkModal(catId, month) {
+    remarkTarget = { catId, month };
+    const catName = categories.find(c => c.id === catId).name.replace('Fuel for ', '');
+    const monthName = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][month];
+    document.getElementById('remarkContextText').innerText = `Kategori: ${catName} | Bulan: ${monthName}`;
+    document.getElementById('remarkInput').value = remarks[`${catId}-${month}`] || '';
+    document.getElementById('deleteRemarkBtn').style.display = remarks[`${catId}-${month}`] ? 'inline-flex' : 'none';
+    document.getElementById('remarkOverlay').classList.add('show');
+}
+
+function closeRemarkModal() { document.getElementById('remarkOverlay').classList.remove('show'); }
+
+function saveRemark() {
+    const text = document.getElementById('remarkInput').value.trim();
+    if (!text) { alert('Remark tidak boleh kosong, atau gunakan tombol Hapus.'); return; }
+    remarks[`${remarkTarget.catId}-${remarkTarget.month}`] = text;
+    closeRemarkModal();
+    updateCharts();
+}
+
+function deleteRemark() {
+    delete remarks[`${remarkTarget.catId}-${remarkTarget.month}`];
+    closeRemarkModal();
+    updateCharts();
+}
+
+function downloadTemplate() {
+    const template = `Tanggal,Tipe,ID Kategori,Sub Kategori,Item,Qty\n${currentYear}-09-15,ticket,1,ESP,Sumur A-01,100\n${currentYear}-09-15,actual,1,ESP,Sumur A-01,95\n`;
+    const blob = new Blob([template], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'template_import_fuel.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+}
+
+function importCSV() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv,text/csv';
+    input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const text = ev.target.result;
+            const lines = text.split('\n').filter(l => l.trim());
+            if (lines.length < 2) { alert('File kosong'); return; }
+            let imported = 0;
+            for (let i = 1; i < lines.length; i++) {
+                const parts = lines[i].split(',');
+                if (parts.length >= 6) {
+                    const date = parts[0].trim();
+                    const type = parts[1].trim().toLowerCase() === 'actual' ? 'actual' : 'ticket';
+                    const catId = parseInt(parts[2].trim());
+                    const sub = parts[3].trim();
+                    const item = parts[4].trim();
+                    const qty = Math.round(parseFloat(parts[5].trim()) || 0);
+                    if (!isNaN(catId) && date && sub && item && qty > 0) {
+                        const newId = transactions.length ? Math.max(...transactions.map(t => t.id)) + 1 : 1;
+                        transactions.push({ id: newId, date, categoryId: catId, sub, item, type, qty });
+                        imported++;
+                    }
+                }
+            }
+            renderTable();
+            alert(`Import berhasil! ${imported} transaksi dimuat.`);
+        };
+        reader.readAsText(file);
     };
+    input.click();
+}
 
-    // CHARTS (tetap agregat)
-    const ctxBar = document.getElementById('barChart').getContext('2d');
-    new Chart(ctxBar, {
-        type: 'bar',
-        data: {
-            labels: fuelCategories.map(d => d.category.replace('Fuel for ', '')),
-            datasets: [
-                { label: 'Budget', data: fuelCategories.map(d => d.budget), backgroundColor: 'rgba(59,130,246,.7)', borderRadius: 6 },
-                { label: 'Fuel Ticket', data: fuelCategories.map(d => d.ticket), backgroundColor: 'rgba(245,158,11,.7)', borderRadius: 6 },
-                { label: 'Actual', data: fuelCategories.map(d => d.actual), backgroundColor: 'rgba(16,185,129,.7)', borderRadius: 6 }
-            ]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } }
-    });
+function exportCSV() {
+    let csv = '#FIXED_BUDGET\nCategoryID,Category,Budget\n';
+    categories.forEach(c => { csv += `${c.id},${c.name},${c.budgets[currentYear]}\n`; });
+    csv += '\n#TRANSACTIONS\nDate,Type,CategoryID,Sub,Item,Qty\n';
+    transactions.forEach(t => { csv += `${t.date},${t.type},${t.categoryId},${t.sub},${t.item},${Math.round(t.qty)}\n`; });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'fuel_full_report.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+}
 
-    const ctxDonut = document.getElementById('donutChart').getContext('2d');
-    new Chart(ctxDonut, {
-        type: 'doughnut',
-        data: {
-            labels: fuelCategories.map(d => d.category.replace('Fuel for ', '')),
-            datasets: [{ data: fuelCategories.map(d => d.actual), backgroundColor: fuelCategories.map(d => d.color), borderWidth: 3 }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+function updateCharts() {
+    const labels = categories.map(c => c.name.replace('Fuel for ', ''));
+    const budget = categories.map(c => getAggregate(c.id).budget);
+    const ticket = categories.map(c => getAggregate(c.id).ticket);
+    const actual = categories.map(c => getAggregate(c.id).actual);
+    const colors = ['#3b82f6', '#f59e0b', '#10b981', '#8b5cf6', '#ef4444'];
+    if (window.bar) window.bar.destroy();
+    if (window.donut) window.donut.destroy();
+    if (window.trend) window.trend.destroy();
+    window.bar = new Chart(document.getElementById('barChart'), { type:'bar', data:{ labels, datasets:[
+        { label:'Budget', data:budget, backgroundColor:'rgba(59,130,246,.7)' },
+        { label:'Fuel Ticket', data:ticket, backgroundColor:'rgba(245,158,11,.7)' },
+        { label:'Actual Fuel', data:actual, backgroundColor:'rgba(16,185,129,.7)' }
+    ]}, options:{ responsive:true, maintainAspectRatio:false } });
+    window.donut = new Chart(document.getElementById('donutChart'), { type:'doughnut', data:{ labels, datasets:[{ data:ticket, backgroundColor:colors, borderWidth:3 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom' } } } });
+    const trendData = getTrendDataOutlook();
+    const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    const trendDatasets = categories.map((cat, idx) => ({
+        label: cat.name.replace('Fuel for ', ''),
+        data: trendData[cat.id] || new Array(12).fill(0),
+        borderColor: colors[idx],
+        backgroundColor: colors[idx] + '20',
+        tension: 0.3,
+        fill: false,
+        pointRadius: 5,
+        pointHoverRadius: 8
+    }));
+    window.trend = new Chart(document.getElementById('trendChart'), {
+        type: 'line',
+        data: { labels: monthLabels, datasets: trendDatasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            onClick: (e, elements) => {
+                if (elements.length > 0) {
+                    const element = elements[0];
+                    const catId = categories[element.datasetIndex].id;
+                    const month = element.index;
+                    showRemarkModal(catId, month);
+                }
+            },
+            plugins: {
+                legend: { position: 'top' },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) label += ': ';
+                            label += Math.round(context.parsed.y).toLocaleString('id-ID') + ' L';
+                            const catId = categories[context.datasetIndex].id;
+                            const month = context.dataIndex;
+                            const remarkKey = `${catId}-${month}`;
+                            if (remarks[remarkKey]) {
+                                label += ` | Remark: ${remarks[remarkKey]}`;
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: { y: { beginAtZero: true, title: { display: true, text: 'Liters' } } }
+        }
     });
+}
+
+renderTable();
 </script>
 </body>
 </html>
